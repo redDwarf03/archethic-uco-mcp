@@ -1,6 +1,6 @@
-const { McpServer } = require('@modelcontextprotocol/sdk/server/mcp.js');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
-const { z } = require('zod');
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
 
 // Archethic API details
 const ARCHETHIC_API_URL = 'https://mainnet.archethic.net/api';
@@ -39,6 +39,7 @@ async function getArchethicUcoPrice() {
     }
 
     const result = await response.json();
+    console.log('result', result);
 
     if (result.errors) {
       throw new Error(`GraphQL error: ${result.errors.map(e => e.message).join(', ')}`);
@@ -65,21 +66,21 @@ async function getArchethicUcoPrice() {
 const server = new McpServer({
   name: 'Archethic UCO Price Oracle',
   version: '1.0.0',
-  capabilities: {
-    tools: {}
-  }
 });
 
-// Tool schema for getting UCO price
-const getUcoPriceSchema = z.object({
-  // No parameters needed for now, it always fetches UCO price
-}).describe('Fetches the latest UCO price (USD and EUR) from the Archethic oracle.');
+const getUcoPriceSchemaJson = {
+  type: 'object',
+  properties: {},
+  required: [],
+  additionalProperties: false
+};
+
 
 // Tool: Get UCO Price
 server.tool(
   'getUcoPrice',
   'Fetches the latest UCO price (USD and EUR) from the Archethic network oracle',
-  getUcoPriceSchema,
+  getUcoPriceSchemaJson,
   /**
    * MCP tool handler for fetching UCO price.
    * Calls getArchethicUcoPrice and formats the result for the MCP client.
@@ -89,10 +90,10 @@ server.tool(
   async () => { // No parameters needed from input schema
     try {
       const priceData = await getArchethicUcoPrice();
-
+      console.log('priceData', priceData);
       // Convert Unix timestamp (assumed seconds) to ISO 8601 string for better readability
       const isoTimestamp = new Date(priceData.timestamp * 1000).toISOString();
-
+      console.log('isoTimestamp', isoTimestamp);
       return {
         content: [{
           type: 'text',
@@ -119,12 +120,11 @@ server.tool(
 );
 
 // Start the server only when the script is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   async function startServer() {
     const transport = new StdioServerTransport();
     try {
       await server.connect(transport); // Corrected from server.listen
-      console.log('Archethic UCO Price MCP Server started');
     } catch (error) {
       console.error('Failed to start server connection:', error);
       process.exit(1);
@@ -135,10 +135,8 @@ if (require.main === module) {
 }
 
 // Export functions and constants for testing purposes
-module.exports = {
+export {
   getArchethicUcoPrice,
   ARCHETHIC_API_URL,
   UCO_PRICE_QUERY,
-  // Note: server instance is not exported as it's harder to test directly
-  // We'll test the handler function separately if needed
 };
