@@ -1,0 +1,28 @@
+{
+  "name": "archethic-uco-mcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "homepage": "https://github.com/kukapay/chainlink-feeds-mcp",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "archethic",
+    "oracle",
+    "uco",
+    "price feed"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "An MCP server that provides real-time UCO price data from the Archethic network's OracleChain.",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "https-proxy-agent": "^7.0.6",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
