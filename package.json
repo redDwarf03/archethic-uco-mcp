@@ -5,8 +5,8 @@
   "type": "module",
   "homepage": "https://github.com/kukapay/chainlink-feeds-mcp",
   "scripts": {
-    "test": "jest",
-    "start": "node index.js"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "start": "node --trace-warnings index.js"
   },
   "keywords": [
     "mcp",

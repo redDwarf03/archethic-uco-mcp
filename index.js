@@ -1,6 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { z } from 'zod';
 
 // Archethic API details
 const ARCHETHIC_API_URL = 'https://mainnet.archethic.net/api';
@@ -66,21 +65,27 @@ async function getArchethicUcoPrice() {
 const server = new McpServer({
   name: 'Archethic UCO Price Oracle',
   version: '1.0.0',
+  capabilities: {
+    tools: {},
+  },
 });
 
-const getUcoPriceSchemaJson = {
+// Define schema as a plain object instead of Zod
+const getUcoPriceSchemaPlain = {
   type: 'object',
   properties: {},
   required: [],
-  additionalProperties: false
+  additionalProperties: false,
+  description: 'Fetches the latest UCO price (USD and EUR) from the Archethic network oracle',
+  name: 'getUcoPrice',
+  parameters: {}
 };
-
 
 // Tool: Get UCO Price
 server.tool(
   'getUcoPrice',
   'Fetches the latest UCO price (USD and EUR) from the Archethic network oracle',
-  getUcoPriceSchemaJson,
+  getUcoPriceSchemaPlain, // Use the plain object schema
   /**
    * MCP tool handler for fetching UCO price.
    * Calls getArchethicUcoPrice and formats the result for the MCP client.

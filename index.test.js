@@ -1,4 +1,5 @@
-const { getArchethicUcoPrice, ARCHETHIC_API_URL, UCO_PRICE_QUERY } = require('./index');
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { getArchethicUcoPrice, ARCHETHIC_API_URL, UCO_PRICE_QUERY } from './index.js';
 
 // Mock the global fetch function
 global.fetch = jest.fn();
